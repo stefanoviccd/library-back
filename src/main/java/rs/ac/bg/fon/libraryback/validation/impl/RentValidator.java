@@ -29,25 +29,26 @@ public class RentValidator implements RentsValidator {
     @Override
     public void validate(LibraryMember member, Book book) throws ValidationException {
         if(!isMemberExistsInDatabase(member))
-            throw new ValidationException("Library member does not exists in database!");
+            throw new ValidationException("Član ne postoji u sistemu!");
         if(isMemberCardExpiry(member))
-            throw new ValidationException("Membership card is expiry!");
+            throw new ValidationException("Članska karta je istekla!");
         if(!isBookExistsInDatabase(book))
-            throw new ValidationException("Book does not exists in database!");
+            throw new ValidationException("Knjiga ne postoji u sistemu!");
         if(isBookCurrentlyRented(book))
-            throw new ValidationException("Book is currently rented!");
+            throw new ValidationException("Knjiga je trenutno iznajmljena!");
         if(getCurrentMemberRents(member)>1)
-            throw new ValidationException("Member currently has maximum allowed number of rented books - two.");
+            throw new ValidationException("Član trenutno beleži maksimali broj knjiga za iznajmljivanje - dve.");
     }
 
     private int getCurrentMemberRents(LibraryMember member) {
-        List<BookRent> dbRents= (List<BookRent>) rentRepository.getByUser(member.getId()).stream().filter(bookRent -> bookRent.getReturnDate()==null);
-       /* for (BookRent br: dbRents){
+        List<BookRent> dbRents= (List<BookRent>) rentRepository.getByUser(member.getId());
+        int i=0;
+        for (BookRent br: dbRents){
         if(br.getReturnDate()==null){
             i++;
         }
-        }*/
-        return dbRents.size();
+        }
+        return i;
     }
 
     private boolean isBookCurrentlyRented(Book book) {

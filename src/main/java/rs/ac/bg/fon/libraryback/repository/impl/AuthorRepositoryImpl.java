@@ -12,10 +12,10 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public void delete(Author dbAuthor) throws ValidationException {
         if (dbAuthor == null) {
-            throw new ValidationException("Author to be deleted is null!");
+            throw new ValidationException("Autor pri brisanju ne sme biti null!");
         }
         if (dbAuthor.getId() == null) {
-            throw new ValidationException("Author to be deleted has id null!");
+            throw new ValidationException("Autor za brisanje ne sme imati id null!");
         }
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         Author author = em.find(Author.class, dbAuthor.getId());
@@ -35,10 +35,10 @@ public class AuthorRepositoryImpl implements AuthorRepository {
     @Override
     public void save(Author author) throws ValidationException {
         if (author == null) {
-            throw new ValidationException("Author to be saved is null!");
+            throw new ValidationException("Autor za čuvanje je null!");
         }
         if (author.getName() == null || author.getLastName() == null) {
-            throw new ValidationException("Author to be saved does not have valid name or last name!");
+            throw new ValidationException("Autor za čuvanje nema validno ime ili prezime!");
         }
 
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();

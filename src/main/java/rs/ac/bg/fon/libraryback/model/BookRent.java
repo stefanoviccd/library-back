@@ -4,16 +4,15 @@
  */
 package rs.ac.bg.fon.libraryback.model;
 
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 /**
- *
  * @author Dragana Stefanovic
  */
 @Data
@@ -34,10 +33,12 @@ public class BookRent {
     private LocalDate returnDate;
     @ManyToOne(
 
+
     )
     @JoinColumn(
             name = "book",
             referencedColumnName = "id"
+
     )
     private Book book;
     @ManyToOne(
@@ -48,5 +49,5 @@ public class BookRent {
             referencedColumnName = "id"
     )
     private LibraryMember byMember;
-    
+
 }

@@ -16,7 +16,7 @@ public class UserRepositoryImpl implements UserRepository {
         List<Librarian> dbResult= em.createQuery("select m from Librarian m where m.username LIKE :valueUser and m.password LIKE :valuePass").setParameter("valueUser", username).setParameter("valuePass", password)
                 .getResultList();
         if(dbResult.isEmpty())
-            throw  new UserNotFoundException("Invalid credentials.");
+            throw  new UserNotFoundException("Neispravno korisničko ime ili lozinka.");
         return dbResult.get(0);
     }
 }

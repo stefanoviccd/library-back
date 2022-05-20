@@ -5,13 +5,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.libraryback.communication.Response;
 import rs.ac.bg.fon.libraryback.model.Book;
+import rs.ac.bg.fon.libraryback.model.BookGenre;
 import rs.ac.bg.fon.libraryback.service.BookService;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1/book")
+@RequestMapping("/api/v1/books")
 public class BookController {
     private BookService bookService;
 
@@ -20,12 +22,32 @@ public class BookController {
     }
 
     @GetMapping
+    @CrossOrigin
     public ResponseEntity<Response> getAllBooks() {
         Response response = new Response();
         try {
             List<Book> books = bookService.getAllBooks();
             response.setResponseData(books);
             response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
+    }
+    @GetMapping("/genres")
+    @CrossOrigin
+    public ResponseEntity<Response> getBookGenres() {
+        Response response = new Response();
+        try {
+            BookGenre[] genres = BookGenre.values();
+            response.setResponseData(genres);
+            response.setResponseException(null);
+            System.out.println("POSLATI ZANROVI - velicine " +genres.length);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
@@ -44,6 +66,25 @@ public class BookController {
         try {
             List<Book> books = bookService.getByValue(value);
             response.setResponseData(books);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
+    }
+
+    @GetMapping("/id/{id}")
+    @CrossOrigin
+    public ResponseEntity<Response> getBookById(@PathVariable(name = "id") Long id) {
+        Response response = new Response();
+        try {
+            Book book= bookService.getById(id);
+            response.setResponseData(book);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -98,6 +139,7 @@ public class BookController {
     public ResponseEntity<Response> saveBook(@RequestBody Book book) {
         Response response = new Response();
         try {
+            System.out.println(book);
             Book save = bookService.save(book);
             response.setResponseData(save);
             response.setResponseException(null);
@@ -109,7 +151,6 @@ public class BookController {
             response.setResponseException(ex);
             return ResponseEntity.ok().body(response);
         }
-
     }
 
 }

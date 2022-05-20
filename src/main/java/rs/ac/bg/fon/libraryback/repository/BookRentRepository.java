@@ -10,4 +10,8 @@ public interface BookRentRepository {
     BookRent save(BookRent bookRent);
 
     void update(BookRent bookRent);
+
+    List<BookRent> getCurrentlyActiveRents();
+
+    List<BookRent> getByBook(Long id);
 }

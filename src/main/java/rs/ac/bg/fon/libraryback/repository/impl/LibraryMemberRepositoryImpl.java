@@ -71,4 +71,12 @@ public class LibraryMemberRepositoryImpl implements LibraryMemberRepository {
         return member;
 
     }
+
+    @Override
+    public LibraryMember getByExactCardNumber(String cardNumber) {
+        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+        LibraryMember member = (LibraryMember) em.createQuery("select m from LibraryMember m where  m.membershipCard.cardNumber LIKE :value").setParameter("value", cardNumber)
+                .getSingleResult();
+        return member;
+    }
 }

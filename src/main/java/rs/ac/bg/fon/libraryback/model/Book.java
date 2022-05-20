@@ -29,8 +29,8 @@ public class Book {
     private String ISBN;
     private String title;
 
-    @Column(name = "issue_date")
-    private LocalDate issueDate;
+    @Column(name = "issue_year")
+    private int issueYear;
     @ManyToOne(
 
     )

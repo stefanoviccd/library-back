@@ -8,9 +8,13 @@ import java.util.List;
 
 public interface BookRepository {
     List<Book> getAll();
+
     List<Book> getByValue(String value);
+
     Book save(Book book) throws ValidationException;
+
     Book update(Book book);
+
     void delete(Long id);
 
 
@@ -19,4 +23,6 @@ public interface BookRepository {
     List<Book> getByAuthor(Author dbAuthor);
 
     List<Book> getByISBN(String isbn);
+
+    int getTitleCount();
 }

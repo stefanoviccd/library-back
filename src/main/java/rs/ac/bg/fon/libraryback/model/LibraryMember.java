@@ -20,6 +20,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name="library_member")
 public class LibraryMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

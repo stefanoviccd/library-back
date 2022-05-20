@@ -17,9 +17,9 @@ public class UpdateMemberValidator implements LibraryMemberValidator {
     public void validate(Object o) throws ValidationException {
         LibraryMember member=(LibraryMember) o;
         if(userWithSameNameAndContactExists(member))
-            throw new ValidationException("User with name and contact provided exists in database");
+            throw new ValidationException("Korisnik sa identičnim podacima postoji u sistemu.");
         if(isMembershipCardNumberTaken(member))
-            throw new ValidationException("Membership card number is taken");
+            throw new ValidationException("Broj članske karte zauzet.");
 
     }
 

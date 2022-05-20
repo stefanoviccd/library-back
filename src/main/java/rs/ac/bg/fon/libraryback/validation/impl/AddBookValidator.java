@@ -18,7 +18,7 @@ public class AddBookValidator implements BookValidator {
     public void validate(Object o) throws ValidationException {
         Book book=(Book) o;
         if(bookWithSameISBMExists(book))
-            throw new ValidationException("Book with same ISBN is already exixsts!");
+            throw new ValidationException("Knjiga sa istim ISBN brojem postoji u sistemu!");
     }
 
     private boolean bookWithSameISBMExists(Book book) {

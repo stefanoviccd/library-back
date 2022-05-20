@@ -21,10 +21,10 @@ public class UserService {
 
         try {
             if (username == null && username.isEmpty()) {
-                throw new ValidationException("Username cannot be null!");
+                throw new ValidationException("Username ne sme null!");
             }
             if (password == null && password.isEmpty()) {
-                throw new ValidationException("Password cannot be null!");
+                throw new ValidationException("Password ne sme null!");
             }
 
             Librarian dbLibrarian=userRepository.login(username, password);
@@ -34,8 +34,7 @@ public class UserService {
 
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Error - class: UserService -> line:36");
-            System.out.println("Error message: "+e.getMessage());
+
             throw  e;
         }
         finally {

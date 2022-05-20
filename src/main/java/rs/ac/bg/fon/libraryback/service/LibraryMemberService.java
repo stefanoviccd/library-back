@@ -1,13 +1,13 @@
 package rs.ac.bg.fon.libraryback.service;
 
+import org.apache.tomcat.jni.Library;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
-import rs.ac.bg.fon.libraryback.model.Author;
-import rs.ac.bg.fon.libraryback.model.Book;
-import rs.ac.bg.fon.libraryback.model.LibraryMember;
-import rs.ac.bg.fon.libraryback.model.MembershipCard;
+import rs.ac.bg.fon.libraryback.model.*;
+import rs.ac.bg.fon.libraryback.repository.BookRentRepository;
 import rs.ac.bg.fon.libraryback.repository.LibraryMemberRepository;
 import rs.ac.bg.fon.libraryback.repository.MembershipCardRepository;
+import rs.ac.bg.fon.libraryback.repository.impl.BookRentRepositoryImpl;
 import rs.ac.bg.fon.libraryback.repository.impl.LibraryMemberRepositoryImpl;
 import rs.ac.bg.fon.libraryback.repository.impl.MembershipCardRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.LibraryMemberValidator;
@@ -19,13 +19,16 @@ import javax.persistence.EntityManager;
 import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
 
 public class LibraryMemberService {
     private LibraryMemberRepository memberRepository;
     private MembershipCardRepository membershipCardRepository;
+    private BookRentRepository rentRepository;
     private LibraryMemberValidator addMemberValidator;
     private LibraryMemberValidator deleteMemberValidator;
     private LibraryMemberValidator updateMemberValidator;
+
 
     public LibraryMemberService() {
         memberRepository = new LibraryMemberRepositoryImpl();
@@ -33,6 +36,7 @@ public class LibraryMemberService {
         addMemberValidator=new AddLibraryMemberValidator();
         deleteMemberValidator=new DeleteMemberValidator();
         updateMemberValidator=new UpdateMemberValidator();
+        rentRepository=new BookRentRepositoryImpl();
     }
 
     public List<LibraryMember> getAllMembers() {
@@ -80,7 +84,7 @@ public class LibraryMemberService {
 
     public void deleteMember(Long id) throws ValidationException  {
         if (id == null)
-            throw new ValidationException("Member to be deleted cannot have id null!");
+            throw new ValidationException("Član za brisanje ima id null!");
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();
         try {
@@ -88,6 +92,12 @@ public class LibraryMemberService {
             deleteMemberValidator.validate(id);
             MembershipCard dbMembershipCard = getUserCard(id);
             membershipCardRepository.delete(dbMembershipCard);
+            List<BookRent> bookRents=rentRepository.getByUser(id);
+            for (BookRent rent: bookRents
+            ) {
+                em.remove(rent);
+
+            }
             memberRepository.delete(id);
 
             em.getTransaction().commit();
@@ -113,10 +123,10 @@ public class LibraryMemberService {
     public LibraryMember update(LibraryMember member) throws ValidationException {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         if (member == null) {
-            throw new ValidationException("Library member to be updated is null!");
+            throw new ValidationException("Član za izmenu je null!");
         }
         if (member.getId() == null)
-            throw new ValidationException("Library member to be updated has id null!");
+            throw new ValidationException("Član za izmenu ima id null!");
 
         em.getTransaction().begin();
         try {
@@ -143,13 +153,13 @@ public class LibraryMemberService {
 
     public LibraryMember save(LibraryMember member) throws ValidationException {
         if (member == null)
-            throw new ValidationException("Library member to be saved is null!");
+            throw new ValidationException("Član za čuvanje je null!");
         if (member.getMembershipCard() == null) {
-            throw new ValidationException("Library member to be saved has membership card null!");
+            throw new ValidationException("Član za čuvanje nema člansku kartu!");
 
         }
         if (member.getMembershipCard().getCardNumber() == null || member.getMembershipCard().getCardNumber().isEmpty() ) {
-            throw new ValidationException("Membership card number must be prvided for saving member!");
+            throw new ValidationException("Mora se obezbediti broj članske karte!");
 
         }
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
@@ -159,7 +169,7 @@ public class LibraryMemberService {
             addMemberValidator.validate(member);
             List<MembershipCard> dbCards = membershipCardRepository.getByCardNumber(member.getMembershipCard().getCardNumber());
             if (!dbCards.isEmpty()) {
-               throw  new ValidationException("Membership card number is already exist!");
+               throw  new ValidationException("Broj članske karte već postoji!");
             }
             member.getMembershipCard().setIssueDate(LocalDate.now());
             member.getMembershipCard().setExpiryDate(LocalDate.now().plusYears(2));
@@ -184,9 +194,63 @@ public class LibraryMemberService {
         List<LibraryMember> dbResult;
         try {
             if (cardNumber == null || cardNumber.isEmpty())
-                throw new ValidationException("Card number must be provided for finding member by it!");
+                throw new ValidationException("Mora postojati broj članske karte za pretragu!");
             else
                 dbResult = memberRepository.getByCardNumber(cardNumber);
+            em.getTransaction().commit();
+            return dbResult;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive())
+                em.getTransaction().rollback();
+            throw e;
+
+        } finally {
+            em.close();
+            EntityManagerProvider.getInstance().closeSession();
+        }
+    }
+
+    public String generateCardNumber() {
+        Random randomGenerator=new Random();
+        String cardNumber="";
+        for(int i=0; i<15;i++)
+            cardNumber+= randomGenerator.nextInt(10);
+        return cardNumber;
+    }
+
+    public LibraryMember getById(Long value) throws ValidationException {
+        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+        em.getTransaction().begin();
+        LibraryMember dbResult;
+        try {
+            if (value == null)
+                throw new ValidationException("Mora postojati id za pretragu!");
+            else
+                dbResult = memberRepository.getById(value);
+            em.getTransaction().commit();
+            return dbResult;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive())
+                em.getTransaction().rollback();
+            throw e;
+
+        } finally {
+            em.close();
+            EntityManagerProvider.getInstance().closeSession();
+        }
+
+
+    }
+
+    public LibraryMember getByExactCardNumber(String cardNumber) throws ValidationException {
+        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+        em.getTransaction().begin();
+        LibraryMember dbResult;
+        try {
+            if (cardNumber == null || cardNumber.isEmpty())
+                throw new ValidationException("Mora postojati broj članske karte za pretragu!");
+            else
+                dbResult = memberRepository.getByExactCardNumber(cardNumber);
             em.getTransaction().commit();
             return dbResult;
         } catch (Exception e) {

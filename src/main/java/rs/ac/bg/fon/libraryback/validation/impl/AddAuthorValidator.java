@@ -18,7 +18,7 @@ public class AddAuthorValidator implements AuthorValidator {
         Author author=(Author) o;
         List<Author>  authors=authorRepository.getByFullName(author.getName(), author.getLastName());
         if(!authors.isEmpty())
-            throw new ValidationException("Author" +author.getName()+" "+author.getLastName() +" already exists in database!");
+            throw new ValidationException("Autor" +author.getName()+" "+author.getLastName() +" postoji u sistemu!");
 
     }
 }

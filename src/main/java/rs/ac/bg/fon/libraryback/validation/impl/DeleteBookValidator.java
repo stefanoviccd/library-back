@@ -22,7 +22,7 @@ public class DeleteBookValidator implements BookValidator {
         }*/
         Book dbBook=em.find(Book.class, id);
         if(dbBook.isCurrentlyRented())
-            throw  new ValidationException("Book is currently rented!");
+            throw  new ValidationException("Knjiga je trenutno iznajmljena!");
 
 
 

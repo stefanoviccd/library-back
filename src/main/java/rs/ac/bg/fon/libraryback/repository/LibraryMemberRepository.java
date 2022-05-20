@@ -21,4 +21,6 @@ public interface LibraryMemberRepository {
     List<LibraryMember> findByFullNameAndContact(String firstName, String lastName, String contact);
 
     LibraryMember save(LibraryMember member);
+
+    LibraryMember getByExactCardNumber(String cardNumber);
 }

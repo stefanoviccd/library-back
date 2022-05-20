@@ -22,10 +22,12 @@ public class RentsController {
     }
     @CrossOrigin
     @PostMapping("/rent")
-    public ResponseEntity<Response> rentBook(@RequestParam(name = "member") LibraryMember member,
-                                             @RequestParam(name = "book") Book book) {
+    public ResponseEntity<Response> rentBook(@RequestBody  BookRent rent
+                                            ) {
         Response response = new Response();
         try {
+            Book book=rent.getBook();
+            LibraryMember member=rent.getByMember();
             rentService.rentBook(member, book);
             response.setResponseData(null);
             response.setResponseException(null);
@@ -33,6 +35,7 @@ public class RentsController {
 
 
         } catch (Exception ex) {
+            ex.printStackTrace();
             response.setResponseData(null);
             response.setResponseException(ex);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -42,7 +45,7 @@ public class RentsController {
     }
     @CrossOrigin
     @PostMapping("/restore")
-    public ResponseEntity<Response> restoreBook(@RequestParam(name = "rent") BookRent rent
+    public ResponseEntity<Response> restoreBook(@RequestBody BookRent rent
                                          ) {
         Response response = new Response();
         try {
@@ -60,4 +63,30 @@ public class RentsController {
         }
 
     }
+
+    @CrossOrigin
+    @GetMapping("/{id}")
+    public ResponseEntity<Response> getUserRents(@PathVariable(name = "id") Long userId
+    ) {
+        Response response = new Response();
+        try {
+            List<BookRent> userRents=rentService.getUserRents(userId);
+
+            response.setResponseData(userRents);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
+
+    }
+
+
+
+
 }

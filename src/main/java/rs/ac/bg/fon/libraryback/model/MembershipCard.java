@@ -21,10 +21,12 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@Table(name = "membership_card")
 public class MembershipCard {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "card_number")
     private String cardNumber;
     @Column(name = "issue_date")
     private LocalDate issueDate;

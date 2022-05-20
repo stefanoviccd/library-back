@@ -16,11 +16,11 @@ public class DeleteMemberValidator implements LibraryMemberValidator {
     }
     @Override
     public void validate(Object o) throws ValidationException {
-        LibraryMember member=(LibraryMember) o;
-          List<BookRent> rentedBooks=bookRentRepository.getByUser(member.getId());
+        Long memberId=(Long) o;
+          List<BookRent> rentedBooks=bookRentRepository.getByUser(memberId);
         for(BookRent br: rentedBooks){
             if(br.getReturnDate()==null)
-                throw  new ValidationException("Library member cannot be deleted because there are books currently rented!");
+                throw  new ValidationException("Ne možete izbrisati člana jer trenutno postoje knjige koje iznajmljuje!");
         }
 
     }

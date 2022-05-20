@@ -49,6 +49,16 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
+    public int getTitleCount() {
+        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+        List<String> titles = em.createQuery("select distinct m.title from Book m")
+                .getResultList();
+        return titles.size();
+
+
+    }
+
+    @Override
     public Book save(Book book) {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.persist(book);

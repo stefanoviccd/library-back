@@ -22,9 +22,9 @@ public class AddLibraryMemberValidator implements LibraryMemberValidator {
     public void validate(Object o) throws ValidationException {
         LibraryMember member=(LibraryMember) o;
         if(userWithSameNameAndContactExists(member))
-            throw new ValidationException("User with name and contact provided exists in database");
+            throw new ValidationException("Korisnik sa istim podacima postoji u bazi.");
         if(isMembershipCardNumberTaken(member.getMembershipCard()))
-            throw new ValidationException("Membership card number is taken");
+            throw new ValidationException("Broj članske karte zauzet.");
 
     }
 

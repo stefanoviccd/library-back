@@ -12,7 +12,7 @@ public class BookRentRepositoryImpl implements BookRentRepository {
     @Override
     public List<BookRent> getByUser(Long memberId) {
         EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
-        List<BookRent> rents = em.createQuery("select m from BookRent m where m.byMember.id = :id").setParameter("id", memberId
+        List<BookRent> rents = em.createQuery("select m from BookRent m where m.byMember.id = :id order by m.returnDate asc, m.rentDate desc").setParameter("id", memberId
         ).getResultList();
         return rents;
     }
@@ -20,7 +20,10 @@ public class BookRentRepositoryImpl implements BookRentRepository {
     @Override
     public BookRent save(BookRent bookRent) {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+        Book b=bookRent.getBook();
         em.persist(bookRent);
+        b.setCurrentlyRented(true);
+        em.merge(b);
         return bookRent;
 
     }
@@ -30,5 +33,22 @@ public class BookRentRepositoryImpl implements BookRentRepository {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.find(BookRent.class, bookRent.getId());
         em.merge(bookRent);
+    }
+
+    @Override
+    public List<BookRent> getCurrentlyActiveRents() {
+        EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
+        List<BookRent> rents = em.createQuery("select m from BookRent m where m.returnDate is null ")
+        .getResultList();
+        return rents;
+    }
+
+    @Override
+    public List<BookRent> getByBook(Long id) {
+        EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
+        List<BookRent> rents = em.createQuery("select m from BookRent m where m.book.id = :id").setParameter("id", id
+        ).getResultList();
+        return rents;
+
     }
 }

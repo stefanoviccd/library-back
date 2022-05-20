@@ -10,8 +10,6 @@ import rs.ac.bg.fon.libraryback.model.BookRent;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
 import rs.ac.bg.fon.libraryback.service.BookRentService;
 import rs.ac.bg.fon.libraryback.service.LibraryMemberService;
-
-import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -27,6 +25,7 @@ public class LibraryMemberController {
     }
 
     @GetMapping
+    @CrossOrigin
     public ResponseEntity<Response> getAllMembers() {
         Response response = new Response();
         try {
@@ -43,7 +42,28 @@ public class LibraryMemberController {
 
         }
     }
+    @GetMapping("/newCardNumber")
+    @CrossOrigin
+    public ResponseEntity<Response> getNewCardNumber() {
+        Response response = new Response();
+        try {
+            String cardNumber = memberService.generateCardNumber();
+            response.setResponseData(cardNumber);
+            response.setResponseException(null);
+            System.out.println("Generisani broj clanske karte je: ");
+            System.out.println(cardNumber);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
+    }
     @GetMapping("{id}/rents")
+    @CrossOrigin
     public ResponseEntity<Response> getUserRents(@PathVariable(name = "id") Long id ) {
         Response response = new Response();
         try {
@@ -79,6 +99,44 @@ public class LibraryMemberController {
 
         }
     }
+    @GetMapping("/id/{id}")
+    @CrossOrigin
+    public ResponseEntity<Response> getMembersById(@PathVariable(name = "id") Long value) {
+        Response response = new Response();
+        try {
+            LibraryMember dbMember = memberService.getById(value);
+            response.setResponseData(dbMember);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
+    }
+    @GetMapping("/userCard/{cardNum}")
+    @CrossOrigin
+    public ResponseEntity<Response> getMembersByCardNumber(@PathVariable(name = "cardNum") String value) {
+        Response response = new Response();
+        try {
+            LibraryMember dbMember = memberService.getByExactCardNumber(value);
+            System.out.println(dbMember);
+            response.setResponseData(dbMember);
+            response.setResponseException(null);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+
+        } catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        }
+    }
 
     @CrossOrigin
     @DeleteMapping("{id}")
@@ -100,6 +158,7 @@ public class LibraryMemberController {
     }
 
     @PutMapping()
+    @CrossOrigin
     public ResponseEntity<Response> updateMember(@RequestBody LibraryMember member) {
 
         Response response = new Response();

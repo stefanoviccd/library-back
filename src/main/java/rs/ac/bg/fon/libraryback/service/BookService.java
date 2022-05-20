@@ -4,9 +4,13 @@ import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Author;
 import rs.ac.bg.fon.libraryback.model.Book;
+import rs.ac.bg.fon.libraryback.model.BookGenre;
+import rs.ac.bg.fon.libraryback.model.BookRent;
 import rs.ac.bg.fon.libraryback.repository.AuthorRepository;
+import rs.ac.bg.fon.libraryback.repository.BookRentRepository;
 import rs.ac.bg.fon.libraryback.repository.BookRepository;
 import rs.ac.bg.fon.libraryback.repository.impl.AuthorRepositoryImpl;
+import rs.ac.bg.fon.libraryback.repository.impl.BookRentRepositoryImpl;
 import rs.ac.bg.fon.libraryback.repository.impl.BookRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.BookValidator;
 import rs.ac.bg.fon.libraryback.validation.impl.AddBookValidator;
@@ -22,6 +26,7 @@ public class BookService {
     private BookValidator deleteValidator;
     private BookValidator addBookValidator;
     private BookValidator updateBookValidator;
+    private BookRentRepository rentRepository;
 
     public BookService() {
         bookRepository = new BookRepositoryImpl();
@@ -29,6 +34,7 @@ public class BookService {
         deleteValidator = new DeleteBookValidator();
         addBookValidator = new AddBookValidator();
         updateBookValidator = new UpdateBookValidator();
+        rentRepository=new BookRentRepositoryImpl();
     }
 
     public List<Book> getAllBooks() {
@@ -54,12 +60,18 @@ public class BookService {
 
     public void deleteBook(Long id) throws ValidationException {
         if (id == null)
-            throw new ValidationException("Book to be deleted cannot have id null!");
+            throw new ValidationException("Knjiga za brisanje ne sme imati id null!");
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();
         try {
             checkIfBookIsRented(id);
             Author dbAuthor = getBookAuthor(id);
+            List<BookRent> bookRents=rentRepository.getByBook(id);
+            for (BookRent rent: bookRents
+                 ) {
+                em.remove(rent);
+
+            }
             bookRepository.delete(id);
 
             //TODO delete author if no his books are presented
@@ -95,9 +107,9 @@ public class BookService {
 
     public Book save(Book book) throws ValidationException {
         if (book == null)
-            throw new ValidationException("Book to be saved is null!");
+            throw new ValidationException("Knjiga za čuvanje je null!");
         if (book.getAuthor() == null) {
-            throw new ValidationException("Book to be saved has author null!");
+            throw new ValidationException("Knjiga za čuvanje nema autora!");
 
         }
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
@@ -154,10 +166,10 @@ public class BookService {
     public Book update(Book book) throws ValidationException {
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         if (book == null) {
-            throw new ValidationException("Book to be updated is null!");
+            throw new ValidationException("Knjiga za izmenu je null!");
         }
         if (book.getId() == null)
-            throw new ValidationException("Book to be updated has id null!");
+            throw new ValidationException("Knjiga za izmenu ima id null!");
 
         em.getTransaction().begin();
         try {
@@ -188,5 +200,28 @@ public class BookService {
 
         return book;
 
+    }
+
+    public Book getById(Long id) throws ValidationException {
+        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+        em.getTransaction().begin();
+        Book dbResult;
+        try {
+            if (id == null)
+                throw new ValidationException("Id ne sme biti null!");
+
+            else
+                dbResult = bookRepository.findById(id);
+            em.getTransaction().commit();
+            return dbResult;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive())
+                em.getTransaction().rollback();
+            throw e;
+
+        } finally {
+            em.close();
+            EntityManagerProvider.getInstance().closeSession();
+        }
     }
 }
