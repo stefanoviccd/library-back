@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/books")
 public class BookController {
     private BookService bookService;
@@ -20,9 +20,8 @@ public class BookController {
     public BookController() {
         bookService = new BookService();
     }
-
+    @CrossOrigin(origins = "*")
     @GetMapping
-    @CrossOrigin
     public ResponseEntity<Response> getAllBooks() {
         Response response = new Response();
         try {
@@ -40,7 +39,7 @@ public class BookController {
         }
     }
     @GetMapping("/genres")
-    @CrossOrigin
+    @CrossOrigin(origins = "*")
     public ResponseEntity<Response> getBookGenres() {
         Response response = new Response();
         try {
