@@ -13,12 +13,11 @@ import rs.ac.bg.fon.libraryback.repository.refactor.UserRepository;
 import javax.persistence.EntityManager;
 @Service
 public class UserService {
-    // private UserRepository userRepository;
     @Autowired
     private UserRepository userRepository;
 
+
     public UserService() {
-        //userRepository=new UserRepositoryImpl();
     }
 
     public Librarian login(String username, String password) throws UserNotFoundException, ValidationException {

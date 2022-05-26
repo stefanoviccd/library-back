@@ -27,9 +27,6 @@ public class BookRentService {
     private BookRepository bookRepository;
 
     public BookRentService() {
-      /*  rentRepository = new BookRentRepositoryImpl();
-        bookRepository=new BookRepositoryImpl();
-        rentsValidator=new RentValidator();*/
         rentsValidator=new RentValidator();
     }
 

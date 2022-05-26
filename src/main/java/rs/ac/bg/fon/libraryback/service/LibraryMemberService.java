@@ -36,12 +36,9 @@ public class LibraryMemberService {
 
 
     public LibraryMemberService() {
-        memberRepository = new LibraryMemberRepositoryImpl();
-        membershipCardRepository=new MembershipCardRepositoryImpl();
         addMemberValidator=new AddLibraryMemberValidator();
         deleteMemberValidator=new DeleteMemberValidator();
         updateMemberValidator=new UpdateMemberValidator();
-        rentRepository=new BookRentRepositoryImpl();
     }
 
     public List<LibraryMember> getAllMembers() {

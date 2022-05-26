@@ -21,14 +21,13 @@ import rs.ac.bg.fon.libraryback.validation.impl.UpdateBookValidator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+
 @Service
 public class BookService {
-
+    @Autowired
     private BookRepository bookRepository;
     @Autowired
     private AuthorRepository authorRepository;
-    @Autowired
-    private rs.ac.bg.fon.libraryback.repository.refactor.AuthorRepository authorRepo;
     @Autowired
     private BookRentRepository rentRepository;
     private BookValidator deleteValidator;
@@ -37,12 +36,9 @@ public class BookService {
 
 
     public BookService() {
-        bookRepository = new BookRepositoryImpl();
-       // authorRepository = new AuthorRepositoryImpl();
         deleteValidator = new DeleteBookValidator();
         addBookValidator = new AddBookValidator();
         updateBookValidator = new UpdateBookValidator();
-        //rentRepository=new BookRentRepositoryImpl();
     }
 
     public List<Book> getAllBooks() {
@@ -74,16 +70,15 @@ public class BookService {
         try {
             checkIfBookIsRented(id);
             Author dbAuthor = getBookAuthor(id);
-            List<BookRent> bookRents=rentRepository.getByBook(id);
-            for (BookRent rent: bookRents
-                 ) {
+            List<BookRent> bookRents = rentRepository.getByBook(id);
+            for (BookRent rent : bookRents
+            ) {
                 em.remove(rent);
 
             }
             bookRepository.delete(id);
             if (!areAuthorsBooksPresentedInDatabase(dbAuthor))
-                authorRepo.delete(dbAuthor);
-               // authorRepository.delete(dbAuthor);
+                authorRepository.delete(dbAuthor);
 
             em.getTransaction().commit();
 
@@ -182,13 +177,12 @@ public class BookService {
         try {
             updateBookValidator.validate(book);
 
-            List<Author> authors= authorRepository.getByFullName(book.getAuthor().getName(), book.getAuthor().getLastName());
+            List<Author> authors = authorRepository.getByFullName(book.getAuthor().getName(), book.getAuthor().getLastName());
 
-            if(authors==null || authors.isEmpty()){
+            if (authors == null || authors.isEmpty()) {
                 book.getAuthor().setId(null);
                 authorRepository.save(book.getAuthor());
-            }
-            else{
+            } else {
                 book.getAuthor().setId(authors.get(0).getId());
             }
             bookRepository.update(book);
