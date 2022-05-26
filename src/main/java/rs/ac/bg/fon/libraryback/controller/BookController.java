@@ -1,16 +1,19 @@
 package rs.ac.bg.fon.libraryback.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.libraryback.communication.Response;
+import rs.ac.bg.fon.libraryback.dto.BookDTO;
 import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.model.BookGenre;
 import rs.ac.bg.fon.libraryback.service.BookService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -19,15 +22,18 @@ public class BookController {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     public BookController() {
-        //bookService = new BookService();
     }
     @CrossOrigin(origins = "*")
     @GetMapping
     public ResponseEntity<Response> getAllBooks() {
         Response response = new Response();
         try {
-            List<Book> books = bookService.getAllBooks();
+            List<BookDTO> books = bookService.getAllBooks().stream().map(book -> modelMapper.map(book, BookDTO.class))
+                    .collect(Collectors.toList());
             response.setResponseData(books);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -48,7 +54,6 @@ public class BookController {
             BookGenre[] genres = BookGenre.values();
             response.setResponseData(genres);
             response.setResponseException(null);
-            System.out.println("POSLATI ZANROVI - velicine " +genres.length);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
@@ -65,7 +70,8 @@ public class BookController {
     public ResponseEntity<Response> getBookByValue(@PathVariable(name = "value") String value) {
         Response response = new Response();
         try {
-            List<Book> books = bookService.getByValue(value);
+            List<BookDTO> books = bookService.getByValue(value).stream().map(book->modelMapper.map(book, BookDTO.class))
+                    .collect(Collectors.toList());;
             response.setResponseData(books);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -85,7 +91,7 @@ public class BookController {
         Response response = new Response();
         try {
             Book book= bookService.getById(id);
-            response.setResponseData(book);
+            response.setResponseData(modelMapper.map(book, BookDTO.class));
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -117,11 +123,11 @@ public class BookController {
 
     }
     @PutMapping()
-    public ResponseEntity<Response> updateBook(@RequestBody Book book) {
+    public ResponseEntity<Response> updateBook(@RequestBody BookDTO bookDTO) {
 
         Response response = new Response();
         try {
-            Book savedBook = bookService.update(book);
+            Book savedBook = bookService.update(modelMapper.map(bookDTO, Book.class));
             response.setResponseData(savedBook);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -137,11 +143,10 @@ public class BookController {
 
     @CrossOrigin
     @PostMapping()
-    public ResponseEntity<Response> saveBook(@RequestBody Book book) {
+    public ResponseEntity<Response> saveBook(@RequestBody BookDTO bookDTO) {
         Response response = new Response();
         try {
-            System.out.println(book);
-            Book save = bookService.save(book);
+            Book save = bookService.save(modelMapper.map(bookDTO, Book.class));
             response.setResponseData(save);
             response.setResponseException(null);
             return ResponseEntity.ok().body(response);
