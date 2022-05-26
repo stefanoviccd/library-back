@@ -1,5 +1,7 @@
 package rs.ac.bg.fon.libraryback.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Author;
@@ -19,22 +21,28 @@ import rs.ac.bg.fon.libraryback.validation.impl.UpdateBookValidator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
+@Service
 public class BookService {
+
     private BookRepository bookRepository;
+    @Autowired
     private AuthorRepository authorRepository;
+    @Autowired
+    private rs.ac.bg.fon.libraryback.repository.refactor.AuthorRepository authorRepo;
+    @Autowired
+    private BookRentRepository rentRepository;
     private BookValidator deleteValidator;
     private BookValidator addBookValidator;
     private BookValidator updateBookValidator;
-    private BookRentRepository rentRepository;
+
 
     public BookService() {
         bookRepository = new BookRepositoryImpl();
-        authorRepository = new AuthorRepositoryImpl();
+       // authorRepository = new AuthorRepositoryImpl();
         deleteValidator = new DeleteBookValidator();
         addBookValidator = new AddBookValidator();
         updateBookValidator = new UpdateBookValidator();
-        rentRepository=new BookRentRepositoryImpl();
+        //rentRepository=new BookRentRepositoryImpl();
     }
 
     public List<Book> getAllBooks() {
@@ -73,10 +81,9 @@ public class BookService {
 
             }
             bookRepository.delete(id);
-
-            //TODO delete author if no his books are presented
             if (!areAuthorsBooksPresentedInDatabase(dbAuthor))
-                authorRepository.delete(dbAuthor);
+                authorRepo.delete(dbAuthor);
+               // authorRepository.delete(dbAuthor);
 
             em.getTransaction().commit();
 

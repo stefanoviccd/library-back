@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Author;
 

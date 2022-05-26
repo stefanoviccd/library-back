@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,9 +18,10 @@ import java.util.List;
 @CrossOrigin
 @RequestMapping("/api/v1/statistics")
 public class StatisticsController {
+    @Autowired
     private StatisticsService statisticsService;
     public StatisticsController(){
-        statisticsService=new StatisticsService();
+        //statisticsService=new StatisticsService();
     }
 
 

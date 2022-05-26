@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.repository.impl;
 
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.model.BookRent;
@@ -7,7 +8,7 @@ import rs.ac.bg.fon.libraryback.repository.BookRentRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
+@Repository
 public class BookRentRepositoryImpl implements BookRentRepository {
     @Override
     public List<BookRent> getByUser(Long memberId) {

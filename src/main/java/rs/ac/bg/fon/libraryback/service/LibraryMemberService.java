@@ -1,6 +1,8 @@
 package rs.ac.bg.fon.libraryback.service;
 
 import org.apache.tomcat.jni.Library;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.*;
@@ -20,10 +22,13 @@ import java.lang.reflect.Member;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
-
+@Service
 public class LibraryMemberService {
+    @Autowired
     private LibraryMemberRepository memberRepository;
+    @Autowired
     private MembershipCardRepository membershipCardRepository;
+    @Autowired
     private BookRentRepository rentRepository;
     private LibraryMemberValidator addMemberValidator;
     private LibraryMemberValidator deleteMemberValidator;

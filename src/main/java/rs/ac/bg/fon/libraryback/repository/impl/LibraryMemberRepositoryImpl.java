@@ -1,11 +1,12 @@
 package rs.ac.bg.fon.libraryback.repository.impl;
 
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
 import rs.ac.bg.fon.libraryback.repository.LibraryMemberRepository;
 import javax.persistence.EntityManager;
 import java.util.List;
-
+@Repository
 public class LibraryMemberRepositoryImpl implements LibraryMemberRepository {
     @Override
     public List<LibraryMember> getAll() {

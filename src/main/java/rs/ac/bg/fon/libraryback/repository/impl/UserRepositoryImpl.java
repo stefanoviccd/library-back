@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.repository.impl;
 
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.UserNotFoundException;
 import rs.ac.bg.fon.libraryback.model.Librarian;
@@ -7,7 +8,7 @@ import rs.ac.bg.fon.libraryback.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
+@Repository
 public class UserRepositoryImpl implements UserRepository {
     @Override
     public Librarian login(String username, String password) throws UserNotFoundException {

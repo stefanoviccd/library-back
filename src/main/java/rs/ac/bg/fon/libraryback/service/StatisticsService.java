@@ -1,31 +1,33 @@
 package rs.ac.bg.fon.libraryback.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.model.BookRent;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
 import rs.ac.bg.fon.libraryback.model.Statistics;
-import rs.ac.bg.fon.libraryback.repository.BookRentRepository;
-import rs.ac.bg.fon.libraryback.repository.BookRepository;
-import rs.ac.bg.fon.libraryback.repository.LibraryMemberRepository;
 import rs.ac.bg.fon.libraryback.repository.UserRepository;
 import rs.ac.bg.fon.libraryback.repository.impl.BookRentRepositoryImpl;
 import rs.ac.bg.fon.libraryback.repository.impl.BookRepositoryImpl;
 import rs.ac.bg.fon.libraryback.repository.impl.LibraryMemberRepositoryImpl;
 import rs.ac.bg.fon.libraryback.repository.impl.UserRepositoryImpl;
+import rs.ac.bg.fon.libraryback.repository.refactor.BookRentRepository;
+import rs.ac.bg.fon.libraryback.repository.refactor.BookRepository;
+import rs.ac.bg.fon.libraryback.repository.refactor.LibraryMemberRepository;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
+@Service
 public class StatisticsService {
+    @Autowired
     private BookRepository bookRepository;
+    @Autowired
     private LibraryMemberRepository userRepository;
+    @Autowired
     private BookRentRepository rentRepository;
 
     public StatisticsService() {
-        bookRepository = new BookRepositoryImpl();
-        userRepository = new LibraryMemberRepositoryImpl();
-        rentRepository = new BookRentRepositoryImpl();
     }
 
     public Statistics getStatistics() {
@@ -33,10 +35,8 @@ public class StatisticsService {
         int titleCount = 0;
         int rentedBooksCount = 0;
         int userCount = 0;
-     //   Statistics s = new Statistics(2, 5, 32, 4);
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
         em.getTransaction().begin();
-        LibraryMember dbResult;
         try {
             bookCount = getBookCount();
             titleCount = getTitleCount();
@@ -57,7 +57,7 @@ public class StatisticsService {
     }
 
     private int getUserCount() {
-        List<LibraryMember> dbUsers=userRepository.getAll();
+        List<LibraryMember> dbUsers=userRepository.findAll();
         return dbUsers.size();
     }
 
@@ -71,7 +71,7 @@ public class StatisticsService {
     }
 
     private int getBookCount() {
-        List<Book> dbBooks = bookRepository.getAll();
+        List<Book> dbBooks = bookRepository.findAll();
         return dbBooks.size();
     }
 }

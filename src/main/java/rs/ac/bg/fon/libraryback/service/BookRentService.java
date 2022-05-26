@@ -1,5 +1,7 @@
 package rs.ac.bg.fon.libraryback.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Book;
@@ -15,15 +17,19 @@ import rs.ac.bg.fon.libraryback.validation.impl.RentValidator;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
-
+@Service
 public class BookRentService {
+    @Autowired
     private BookRentRepository rentRepository;
+
     private RentsValidator rentsValidator;
+    @Autowired
     private BookRepository bookRepository;
 
     public BookRentService() {
-        rentRepository = new BookRentRepositoryImpl();
+      /*  rentRepository = new BookRentRepositoryImpl();
         bookRepository=new BookRepositoryImpl();
+        rentsValidator=new RentValidator();*/
         rentsValidator=new RentValidator();
     }
 

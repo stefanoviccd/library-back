@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.repository.impl;
 
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Author;
@@ -10,7 +11,7 @@ import rs.ac.bg.fon.libraryback.validation.impl.AddBookValidator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
+@Repository
 public class BookRepositoryImpl implements BookRepository {
 
 

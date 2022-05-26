@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.repository.impl;
 
+import org.springframework.stereotype.Repository;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.model.MembershipCard;
@@ -8,7 +9,7 @@ import rs.ac.bg.fon.libraryback.repository.MembershipCardRepository;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.List;
-
+@Repository
 public class MembershipCardRepositoryImpl implements MembershipCardRepository {
     @Override
     public List<MembershipCard> getByCardNumber(String cardNumber) {
