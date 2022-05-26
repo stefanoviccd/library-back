@@ -40,10 +40,6 @@ public class UserController {
         Librarian dbLibrarian = null;
         Response response = new Response();
         try {
-           /* dbLibrarian = userService.login(user.getUsername(), user.getPassword());
-            response.setResponseData(dbLibrarian);
-            response.setResponseException(null);
-            return ResponseEntity.ok(response);*/
            Authentication auth= authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             user.getUsername(),
@@ -57,7 +53,8 @@ public class UserController {
 
         } catch (Exception e) {
             response.setResponseData(null);
-            response.setResponseException(e);
+            Exception ex=new Exception("Neispravno korisničko ime ili lozinka.");
+            response.setResponseException(ex);
             e.printStackTrace();
             return ResponseEntity.ok(response);
         }

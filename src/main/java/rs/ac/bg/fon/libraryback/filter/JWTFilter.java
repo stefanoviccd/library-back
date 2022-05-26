@@ -55,45 +55,10 @@ public class JWTFilter extends OncePerRequestFilter implements Filter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         }
-        else{
-           // filterChain.doFilter(request, response);
-        }
+
 
     }
 
-
-              /*  userName = jwtUtility.extractUsername(token);
-                System.out.println("JWTFilter: username: " + userName);
-                if (null != userName) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-                    if (jwtUtility.validateToken(token, userDetails)) {
-                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        if (SecurityContextHolder.getContext().getAuthentication() == null)
-                            SecurityContextHolder.getContext().setAuthentication(authToken);
-                    } else {
-                        throw new ServletException("Authorization token is not valid!");
-                    }
-
-                } else {
-                    throw new ServletException("Authorization token is not valid!");
-                }
-                System.out.println("Cors filter check..");
-                response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-                System.out.println("First filter check passed..");
-                response.setHeader("Access-Control-Allow-Credentials", "true");
-                System.out.println("Second filter check passed..");
-                response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH");
-                System.out.println("Third filter check passed..");
-                response.setHeader("Access-Control-Max-Age", "3600");
-                System.out.println("4th filter check passed..");
-                response.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-                System.out.println("5th filter check passed..");
-                filterChain.doFilter(request, response);
-                System.out.println("Final filter check passed..");
-
-                filterChain.doFilter(request, response);
-            */
 
     }
 
