@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.validation.impl;
 
+import org.springframework.stereotype.Component;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.BookRent;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
@@ -8,7 +9,6 @@ import rs.ac.bg.fon.libraryback.repository.impl.BookRentRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.LibraryMemberValidator;
 
 import java.util.List;
-
 public class DeleteMemberValidator implements LibraryMemberValidator {
     private BookRentRepository bookRentRepository;
     public DeleteMemberValidator(){

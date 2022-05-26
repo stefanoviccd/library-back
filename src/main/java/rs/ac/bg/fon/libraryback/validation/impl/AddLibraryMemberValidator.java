@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.validation.impl;
 
+import org.springframework.stereotype.Component;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
 import rs.ac.bg.fon.libraryback.model.MembershipCard;
@@ -10,7 +11,6 @@ import rs.ac.bg.fon.libraryback.repository.impl.MembershipCardRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.LibraryMemberValidator;
 
 import java.util.List;
-
 public class AddLibraryMemberValidator implements LibraryMemberValidator {
     private LibraryMemberRepository memberRepository;
     private MembershipCardRepository membershipCardRepository;

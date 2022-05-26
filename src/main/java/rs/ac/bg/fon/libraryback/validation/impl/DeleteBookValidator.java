@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.validation.impl;
 
+import org.springframework.stereotype.Component;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Book;
@@ -8,7 +9,6 @@ import rs.ac.bg.fon.libraryback.validation.BookValidator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-
 public class DeleteBookValidator implements BookValidator {
     @Override
     public void validate(Object o) throws ValidationException {

@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.validation.impl;
 
+import org.springframework.stereotype.Component;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.repository.BookRepository;
@@ -7,7 +8,6 @@ import rs.ac.bg.fon.libraryback.repository.impl.BookRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.BookValidator;
 
 import java.util.List;
-
 public class AddBookValidator implements BookValidator {
     private BookRepository bookRepository;
     public AddBookValidator(){
