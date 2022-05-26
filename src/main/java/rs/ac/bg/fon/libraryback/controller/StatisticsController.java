@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rs.ac.bg.fon.libraryback.communication.Response;
+import rs.ac.bg.fon.libraryback.dto.StatisticsDTO;
 import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.model.Statistics;
 import rs.ac.bg.fon.libraryback.service.StatisticsService;
@@ -20,6 +22,8 @@ import java.util.List;
 public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
+    @Autowired
+    private ModelMapper modelMapper;
     public StatisticsController(){
     }
 
@@ -30,7 +34,7 @@ public class StatisticsController {
 
         Response response = new Response();
         try {
-            Statistics stat = statisticsService.getStatistics();
+            StatisticsDTO stat = modelMapper.map(statisticsService.getStatistics(), StatisticsDTO.class);
             response.setResponseData(stat);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);

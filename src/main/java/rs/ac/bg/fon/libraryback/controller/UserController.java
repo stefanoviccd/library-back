@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.controller;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,10 +28,8 @@ public class UserController {
     private CustomUserDetailsService userDetailsService;
     @Autowired
     private UserService userService;
-
     public UserController() {
-        //userService = new UserService();
-        authenticationManager=new CustomAuthenticationManager();
+        authenticationManager = new CustomAuthenticationManager();
     }
 
 
@@ -41,20 +40,15 @@ public class UserController {
         Librarian dbLibrarian = null;
         Response response = new Response();
         try {
-           Authentication auth= authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            user.getUsername(),
-                            user.getPassword()
-                    )
-            );
-            final UserDetails userDetails=userDetailsService.loadUserByUsername(user.getUsername());
-            String token= jwtUtility.generateToken(userDetails);
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+            final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
+            String token = jwtUtility.generateToken(userDetails);
             response.setResponseData(token);
-            return  ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             response.setResponseData(null);
-            Exception ex=new Exception("Neispravno korisničko ime ili lozinka.");
+            Exception ex = new Exception("Neispravno korisničko ime ili lozinka.");
             response.setResponseException(ex);
             e.printStackTrace();
             return ResponseEntity.ok(response);
