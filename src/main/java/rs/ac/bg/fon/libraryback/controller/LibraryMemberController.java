@@ -22,8 +22,6 @@ public class LibraryMemberController {
 @Autowired
     private BookRentService rentService;
     public LibraryMemberController() {
-        //memberService = new LibraryMemberService();
-       // rentService=new BookRentService();
     }
 
     @GetMapping

@@ -1,5 +1,6 @@
 package rs.ac.bg.fon.libraryback.service;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +15,10 @@ import rs.ac.bg.fon.libraryback.repository.impl.UserRepositoryImpl;
 import java.util.ArrayList;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
+    @Autowired
     private UserRepository userRepository;
     CustomUserDetailsService(){
-        userRepository=new UserRepositoryImpl();}
+      }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {

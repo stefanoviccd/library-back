@@ -7,7 +7,6 @@ import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.UserNotFoundException;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Librarian;
-import rs.ac.bg.fon.libraryback.repository.impl.UserRepositoryImpl;
 import rs.ac.bg.fon.libraryback.repository.refactor.UserRepository;
 
 import javax.persistence.EntityManager;

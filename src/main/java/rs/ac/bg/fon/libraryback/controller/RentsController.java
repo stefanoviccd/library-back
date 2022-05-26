@@ -20,7 +20,6 @@ public class RentsController {
     private BookRentService rentService;
 
     public RentsController() {
-        //rentService = new BookRentService();
     }
     @CrossOrigin
     @PostMapping("/rent")

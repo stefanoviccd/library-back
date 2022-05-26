@@ -34,6 +34,5 @@ public class LibraryMember {
     @JoinColumn(name = "membership_card_id",
     referencedColumnName = "id")
     private MembershipCard membershipCard;
-    public void save(LibraryMember member) {
-    }
+
 }

@@ -25,10 +25,11 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private CustomUserDetailsService userDetailsService;
+    @Autowired
     private UserService userService;
 
     public UserController() {
-        userService = new UserService();
+        //userService = new UserService();
         authenticationManager=new CustomAuthenticationManager();
     }
 

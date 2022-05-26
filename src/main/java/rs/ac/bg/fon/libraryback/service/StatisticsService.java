@@ -7,14 +7,10 @@ import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.model.BookRent;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
 import rs.ac.bg.fon.libraryback.model.Statistics;
-import rs.ac.bg.fon.libraryback.repository.UserRepository;
-import rs.ac.bg.fon.libraryback.repository.impl.BookRentRepositoryImpl;
-import rs.ac.bg.fon.libraryback.repository.impl.BookRepositoryImpl;
-import rs.ac.bg.fon.libraryback.repository.impl.LibraryMemberRepositoryImpl;
-import rs.ac.bg.fon.libraryback.repository.impl.UserRepositoryImpl;
-import rs.ac.bg.fon.libraryback.repository.refactor.BookRentRepository;
-import rs.ac.bg.fon.libraryback.repository.refactor.BookRepository;
-import rs.ac.bg.fon.libraryback.repository.refactor.LibraryMemberRepository;
+import rs.ac.bg.fon.libraryback.repository.BookRentRepository;
+import rs.ac.bg.fon.libraryback.repository.BookRepository;
+import rs.ac.bg.fon.libraryback.repository.LibraryMemberRepository;
+
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -57,7 +53,7 @@ public class StatisticsService {
     }
 
     private int getUserCount() {
-        List<LibraryMember> dbUsers=userRepository.findAll();
+        List<LibraryMember> dbUsers=userRepository.getAll();
         return dbUsers.size();
     }
 
@@ -71,7 +67,7 @@ public class StatisticsService {
     }
 
     private int getBookCount() {
-        List<Book> dbBooks = bookRepository.findAll();
+        List<Book> dbBooks = bookRepository.getAll();
         return dbBooks.size();
     }
 }

@@ -21,7 +21,6 @@ public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
     public StatisticsController(){
-        //statisticsService=new StatisticsService();
     }
 
 

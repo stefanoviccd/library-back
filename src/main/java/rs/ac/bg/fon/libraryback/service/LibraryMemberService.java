@@ -1,6 +1,6 @@
 package rs.ac.bg.fon.libraryback.service;
 
-import org.apache.tomcat.jni.Library;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
@@ -9,9 +9,6 @@ import rs.ac.bg.fon.libraryback.model.*;
 import rs.ac.bg.fon.libraryback.repository.BookRentRepository;
 import rs.ac.bg.fon.libraryback.repository.LibraryMemberRepository;
 import rs.ac.bg.fon.libraryback.repository.MembershipCardRepository;
-import rs.ac.bg.fon.libraryback.repository.impl.BookRentRepositoryImpl;
-import rs.ac.bg.fon.libraryback.repository.impl.LibraryMemberRepositoryImpl;
-import rs.ac.bg.fon.libraryback.repository.impl.MembershipCardRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.LibraryMemberValidator;
 import rs.ac.bg.fon.libraryback.validation.impl.AddLibraryMemberValidator;
 import rs.ac.bg.fon.libraryback.validation.impl.DeleteMemberValidator;
