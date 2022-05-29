@@ -111,6 +111,7 @@ public class BookService {
 
         }
         EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+        if(!em.getTransaction().isActive())
         em.getTransaction().begin();
         try {
             addBookValidator.validate(book);

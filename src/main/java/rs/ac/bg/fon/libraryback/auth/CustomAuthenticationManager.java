@@ -6,11 +6,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import rs.ac.bg.fon.libraryback.dbConnection.EntityManagerProvider;
 import rs.ac.bg.fon.libraryback.exception.UserNotFoundException;
 import rs.ac.bg.fon.libraryback.model.Librarian;
 import rs.ac.bg.fon.libraryback.repository.UserRepository;
 import rs.ac.bg.fon.libraryback.repository.impl.UserRepositoryImpl;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 
 public class CustomAuthenticationManager implements AuthenticationManager {
@@ -24,12 +27,21 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
+        EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
         try {
+
+            em.getTransaction().begin();
             Librarian lib=repo.login(name, password);
+            em.getTransaction().commit();
             return new UsernamePasswordAuthenticationToken(
                     name, password, new ArrayList<>());
         } catch (UserNotFoundException e) {
+            em.getTransaction().rollback();
             throw new RuntimeException(e);
+        }
+        finally{
+            em.close();
+            EntityManagerProvider.getInstance().closeSession();
         }
     }
 }

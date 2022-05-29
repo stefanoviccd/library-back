@@ -15,6 +15,9 @@ import rs.ac.bg.fon.libraryback.service.CustomUserDetailsService;
 import rs.ac.bg.fon.libraryback.service.UserService;
 import rs.ac.bg.fon.libraryback.utility.JWTUtility;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 
 @RestController
 @CrossOrigin
@@ -43,7 +46,11 @@ public class UserController {
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
             final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
             String token = jwtUtility.generateToken(userDetails);
-            response.setResponseData(token);
+            Date expirationDate=jwtUtility.extractExpiration(token);
+            ArrayList<Object> authData=new ArrayList<>();
+            authData.add(token);
+            authData.add(expirationDate);
+            response.setResponseData(authData);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
