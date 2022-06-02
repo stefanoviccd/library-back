@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import rs.ac.bg.fon.libraryback.service.CustomUserDetailsService;
+import rs.ac.bg.fon.libraryback.service.impl.UserDetailsServiceImpl;
 import rs.ac.bg.fon.libraryback.utility.JWTUtility;
 
 import javax.servlet.*;
@@ -21,7 +21,7 @@ public class JWTFilter extends OncePerRequestFilter implements Filter {
     @Autowired
     private JWTUtility jwtUtility;
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
 
 
     @Override
@@ -35,7 +35,7 @@ public class JWTFilter extends OncePerRequestFilter implements Filter {
         if(!request.getServletPath().equals("/api/v1/user/login")){
             // Get user identity and set it on the spring security context
             UserDetails userDetails = userDetailsService
-                    .loadUserByUsername(jwtUtility.extractUsername(token));
+                    .loadUserByUsername(jwtUtility.getUsernameFromToken(token));
 
             UsernamePasswordAuthenticationToken
                     authentication = new UsernamePasswordAuthenticationToken(

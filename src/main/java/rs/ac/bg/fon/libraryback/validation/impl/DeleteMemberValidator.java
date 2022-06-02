@@ -8,6 +8,7 @@ import rs.ac.bg.fon.libraryback.repository.BookRentRepository;
 import rs.ac.bg.fon.libraryback.repository.impl.BookRentRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.LibraryMemberValidator;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 public class DeleteMemberValidator implements LibraryMemberValidator {
     private BookRentRepository bookRentRepository;
@@ -15,9 +16,9 @@ public class DeleteMemberValidator implements LibraryMemberValidator {
         bookRentRepository=new BookRentRepositoryImpl();
     }
     @Override
-    public void validate(Object o) throws ValidationException {
+    public void validate(Object o, EntityManager em) throws ValidationException {
         Long memberId=(Long) o;
-          List<BookRent> rentedBooks=bookRentRepository.getByUser(memberId);
+          List<BookRent> rentedBooks=bookRentRepository.getByUser(memberId, em);
         for(BookRent br: rentedBooks){
             if(br.getReturnDate()==null)
                 throw  new ValidationException("Ne možete izbrisati člana jer trenutno postoje knjige koje iznajmljuje!");

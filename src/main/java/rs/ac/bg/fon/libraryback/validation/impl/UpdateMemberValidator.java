@@ -6,6 +6,7 @@ import rs.ac.bg.fon.libraryback.repository.LibraryMemberRepository;
 import rs.ac.bg.fon.libraryback.repository.impl.LibraryMemberRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.LibraryMemberValidator;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public class UpdateMemberValidator implements LibraryMemberValidator {
@@ -14,23 +15,28 @@ public class UpdateMemberValidator implements LibraryMemberValidator {
         memberRepository=new LibraryMemberRepositoryImpl();
     }
     @Override
-    public void validate(Object o) throws ValidationException {
+    public void validate(Object o, EntityManager em) throws ValidationException {
         LibraryMember member=(LibraryMember) o;
-        if(userWithSameNameAndContactExists(member))
+        if (member == null) {
+            throw new ValidationException("Član za izmenu je null!");
+        }
+        if (member.getId() == null) throw new ValidationException("Član za izmenu ima id null!");
+
+        if(userWithSameNameAndContactExists(member, em))
             throw new ValidationException("Korisnik sa identičnim podacima postoji u sistemu.");
-        if(isMembershipCardNumberTaken(member))
+        if(isMembershipCardNumberTaken(member, em))
             throw new ValidationException("Broj članske karte zauzet.");
 
     }
 
-    private boolean isMembershipCardNumberTaken(LibraryMember member) {
-        List<LibraryMember> dbMembers=memberRepository.getByCardNumber(member.getMembershipCard().getCardNumber());
+    private boolean isMembershipCardNumberTaken(LibraryMember member, EntityManager em) {
+        List<LibraryMember> dbMembers=memberRepository.getByCardNumber(member.getMembershipCard().getCardNumber(), em);
         return !dbMembers.isEmpty() && dbMembers.get(0).getId()!=member.getId();
     }
 
 
-    private boolean userWithSameNameAndContactExists(LibraryMember member) {
-        List<LibraryMember> dbMembers=memberRepository.findByFullNameAndContact(member.getFirstName(), member.getLastName(), member.getContact());
+    private boolean userWithSameNameAndContactExists(LibraryMember member,  EntityManager em) {
+        List<LibraryMember> dbMembers=memberRepository.findByFullNameAndContact(member.getFirstName(), member.getLastName(), member.getContact(), em);
         return !dbMembers.isEmpty() && dbMembers.get(0).getId()!=member.getId();
     }
 }

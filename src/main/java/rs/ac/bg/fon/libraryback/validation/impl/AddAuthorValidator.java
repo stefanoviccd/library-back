@@ -7,16 +7,18 @@ import rs.ac.bg.fon.libraryback.repository.AuthorRepository;
 import rs.ac.bg.fon.libraryback.repository.impl.AuthorRepositoryImpl;
 import rs.ac.bg.fon.libraryback.validation.AuthorValidator;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 public class AddAuthorValidator implements AuthorValidator {
+
     private AuthorRepository authorRepository;
     public AddAuthorValidator(){
         authorRepository=new AuthorRepositoryImpl();
     }
     @Override
-    public void validate(Object o) throws ValidationException {
+    public void validate(Object o, EntityManager em) throws ValidationException {
         Author author=(Author) o;
-        List<Author>  authors=authorRepository.getByFullName(author.getName(), author.getLastName());
+        List<Author>  authors=authorRepository.getByFullName(author.getName(), author.getLastName(), em);
         if(!authors.isEmpty())
             throw new ValidationException("Autor" +author.getName()+" "+author.getLastName() +" postoji u sistemu!");
 

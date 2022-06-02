@@ -11,6 +11,7 @@ import rs.ac.bg.fon.libraryback.validation.impl.AddBookValidator;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+
 @Repository
 public class BookRepositoryImpl implements BookRepository {
 
@@ -20,9 +21,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> getAll() {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
-
+    public List<Book> getAll(EntityManager em) {
         List<Book> dbResult = em.createQuery("select m from Book m")
                 .getResultList();
         return dbResult;
@@ -30,18 +29,17 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<Book> getByValue(String value) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
-        String searchingParameter="%"+value+"%";
+    public List<Book> getByValue(String value, EntityManager em) {
+        String searchingParameter = "%" + value + "%";
         List<Book> books = em.createQuery("select m from Book m where m.ISBN LIKE :value or  m.title LIKE :value or m.author.name LIKE :value or m.author.lastName LIKE :value").setParameter("value", searchingParameter)
                 .getResultList();
         return books;
 
 
     }
-    public List<Book> getByISBN(String isbn) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
-        String searchingParameter=isbn;
+
+    public List<Book> getByISBN(String isbn, EntityManager em) {
+        String searchingParameter = isbn;
         List<Book> books = em.createQuery("select m from Book m where m.ISBN LIKE :value").setParameter("value", searchingParameter)
                 .getResultList();
         return books;
@@ -50,8 +48,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public int getTitleCount() {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public int getTitleCount(EntityManager em) {
         List<String> titles = em.createQuery("select distinct m.title from Book m")
                 .getResultList();
         return titles.size();
@@ -60,8 +57,7 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Book save(Book book) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+    public Book save(Book book, EntityManager em) {
         em.persist(book);
         return book;
 
@@ -69,32 +65,26 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public Book update(Book book) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
-        Book dbBook=em.find(Book.class, book.getId());
+    public Book update(Book book, EntityManager em) {
+        Book dbBook = em.find(Book.class, book.getId());
         em.merge(book);
         return dbBook;
     }
 
     @Override
-    public void delete(Long id) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+    public void delete(Long id, EntityManager em) {
         Book dbBook = em.find(Book.class, id);
         em.remove(dbBook);
     }
 
     @Override
-    public Book findById(Long id) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+    public Book findById(Long id, EntityManager em) {
         Book dbBook = em.find(Book.class, id);
         return dbBook;
-
-
     }
 
     @Override
-    public List<Book> getByAuthor(Author dbAuthor) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+    public List<Book> getByAuthor(Author dbAuthor, EntityManager em) {
         List<Book> dbResult = em.createQuery("select m from Book m where m.author.id= :id").setParameter("id", dbAuthor.getId()).getResultList();
         return dbResult;
 

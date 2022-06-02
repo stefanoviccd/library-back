@@ -10,11 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import rs.ac.bg.fon.libraryback.communication.Response;
 import rs.ac.bg.fon.libraryback.dto.StatisticsDTO;
-import rs.ac.bg.fon.libraryback.model.Book;
-import rs.ac.bg.fon.libraryback.model.Statistics;
 import rs.ac.bg.fon.libraryback.service.StatisticsService;
-
-import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -22,8 +18,6 @@ import java.util.List;
 public class StatisticsController {
     @Autowired
     private StatisticsService statisticsService;
-    @Autowired
-    private ModelMapper modelMapper;
     public StatisticsController(){
     }
 
@@ -34,7 +28,7 @@ public class StatisticsController {
 
         Response response = new Response();
         try {
-            StatisticsDTO stat = modelMapper.map(statisticsService.getStatistics(), StatisticsDTO.class);
+            StatisticsDTO stat =statisticsService.getStatistics();
             response.setResponseData(stat);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -44,7 +38,7 @@ public class StatisticsController {
             response.setResponseData(null);
             response.setResponseException(ex);
             ex.printStackTrace();
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }

@@ -22,20 +22,10 @@ public class EntityManagerProvider {
         return instance;
     }
     public EntityManager getEntityManager(){
-        if(!session.isOpen()){
-            session = sessionFactory.openSession();
-        }
-        if(em==null || !em.isOpen()) {
-            em= session.getEntityManagerFactory().createEntityManager();
-        }
-
+        em= session.getEntityManagerFactory().createEntityManager();
 
         return em;
 
-    }
-    public void closeSession(){
-        if(session.isOpen())
-            session.close();
     }
 
 

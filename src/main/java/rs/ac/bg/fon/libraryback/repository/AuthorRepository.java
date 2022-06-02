@@ -4,12 +4,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Author;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 public interface AuthorRepository {
-    void delete(Author dbAuthor) throws ValidationException;
+    void delete(Author dbAuthor, EntityManager em) throws ValidationException;
 
-    List<Author> getByFullName(String name, String lastName);
+    List<Author> getByFullName(String name, String lastName, EntityManager em);
 
-    void save(Author author) throws ValidationException;
+    void save(Author author, EntityManager em) throws ValidationException;
 }

@@ -1,18 +1,16 @@
 package rs.ac.bg.fon.libraryback.controller;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.libraryback.auth.CustomAuthenticationManager;
 import rs.ac.bg.fon.libraryback.communication.Response;
 import rs.ac.bg.fon.libraryback.model.Librarian;
-import rs.ac.bg.fon.libraryback.service.CustomUserDetailsService;
-import rs.ac.bg.fon.libraryback.service.UserService;
+import rs.ac.bg.fon.libraryback.service.impl.UserDetailsServiceImpl;
 import rs.ac.bg.fon.libraryback.utility.JWTUtility;
 
 import java.util.ArrayList;
@@ -25,12 +23,11 @@ import java.util.Date;
 public class UserController {
     @Autowired
     private JWTUtility jwtUtility;
-
     private AuthenticationManager authenticationManager;
     @Autowired
-    private CustomUserDetailsService userDetailsService;
-    @Autowired
-    private UserService userService;
+    private UserDetailsServiceImpl userDetailsService;
+
+
     public UserController() {
         authenticationManager = new CustomAuthenticationManager();
     }
@@ -44,9 +41,14 @@ public class UserController {
         Response response = new Response();
         try {
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername());
-            String token = jwtUtility.generateToken(userDetails);
-            Date expirationDate=jwtUtility.extractExpiration(token);
+         /*  if(auth==null){
+               response.setResponseData(null);
+               Exception ex = new Exception("Neispravno korisničko ime ili lozinka.");
+               response.setResponseException(ex);
+               return ResponseEntity.ok(response);
+           }*/
+            String token = jwtUtility.generateToken(user);
+            Date expirationDate=jwtUtility.getExpirationDateFromToken(token);
             ArrayList<Object> authData=new ArrayList<>();
             authData.add(token);
             authData.add(expirationDate);
@@ -57,8 +59,7 @@ public class UserController {
             response.setResponseData(null);
             Exception ex = new Exception("Neispravno korisničko ime ili lozinka.");
             response.setResponseException(ex);
-            e.printStackTrace();
-            return ResponseEntity.ok(response);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
     }

@@ -1,7 +1,6 @@
 package rs.ac.bg.fon.libraryback.controller;
 
 
-import org.apache.tomcat.jni.Library;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,9 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.libraryback.communication.Response;
 import rs.ac.bg.fon.libraryback.dto.BookRentDTO;
 import rs.ac.bg.fon.libraryback.dto.LibraryMemberDTO;
+import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
 import rs.ac.bg.fon.libraryback.service.BookRentService;
 import rs.ac.bg.fon.libraryback.service.LibraryMemberService;
+import rs.ac.bg.fon.libraryback.service.impl.BookRentServiceImpl;
+import rs.ac.bg.fon.libraryback.service.impl.LibraryMemberServiceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,8 +27,7 @@ public class LibraryMemberController {
     private LibraryMemberService memberService;
     @Autowired
     private BookRentService rentService;
-    @Autowired
-    private ModelMapper modelMapper;
+
 
     public LibraryMemberController() {
     }
@@ -36,7 +37,7 @@ public class LibraryMemberController {
     public ResponseEntity<Response> getAllMembers() {
         Response response = new Response();
         try {
-            List<LibraryMemberDTO> members = memberService.getAllMembers().stream().map(lm->modelMapper.map(lm, LibraryMemberDTO.class)).collect(Collectors.toList());
+            List<LibraryMemberDTO> members = memberService.getAllMembers();
             response.setResponseData(members);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -45,7 +46,7 @@ public class LibraryMemberController {
         } catch (Exception ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -64,7 +65,7 @@ public class LibraryMemberController {
         } catch (Exception ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -74,16 +75,22 @@ public class LibraryMemberController {
     public ResponseEntity<Response> getUserRents(@PathVariable(name = "id") Long id) {
         Response response = new Response();
         try {
-            List<BookRentDTO> rents = rentService.getUserRents(id).stream().map(r->modelMapper.map(r, BookRentDTO.class)).collect(Collectors.toList());
+            List<BookRentDTO> rents = rentService.getUserRents(id);
             response.setResponseData(rents);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        }catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -93,16 +100,17 @@ public class LibraryMemberController {
     public ResponseEntity<Response> getMembersByValue(@PathVariable(name = "value") String value) {
         Response response = new Response();
         try {
-            List<LibraryMemberDTO> members = memberService.getByValue(value).stream().map(m->modelMapper.map(m, LibraryMemberDTO.class)).collect(Collectors.toList());
+            List<LibraryMemberDTO> members = memberService.getByValue(value);
             response.setResponseData(members);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -112,17 +120,22 @@ public class LibraryMemberController {
     public ResponseEntity<Response> getMembersById(@PathVariable(name = "id") Long value) {
         Response response = new Response();
         try {
-            LibraryMemberDTO dbMember = modelMapper.map(memberService.getById(value), LibraryMemberDTO.class);
+            LibraryMemberDTO dbMember = memberService.getById(value);
             response.setResponseData(dbMember);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        } catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            ex.printStackTrace();
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -132,17 +145,23 @@ public class LibraryMemberController {
     public ResponseEntity<Response> getMemberByCardNumber(@PathVariable(name = "cardNum") String value) {
         Response response = new Response();
         try {
-            LibraryMemberDTO dbMember = modelMapper.map(memberService.getByExactCardNumber(value), LibraryMemberDTO.class);
+            LibraryMemberDTO dbMember = memberService.getByExactCardNumber(value);
             System.out.println(dbMember);
             response.setResponseData(dbMember);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        } catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -157,11 +176,17 @@ public class LibraryMemberController {
             response.setResponseException(null);
             return ResponseEntity.ok().body(response);
 
-        } catch (Exception ex) {
+        } catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            ex.printStackTrace();
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
 
     }
@@ -172,17 +197,22 @@ public class LibraryMemberController {
 
         Response response = new Response();
         try {
-            LibraryMember transformedLibraryMemberObject=modelMapper.map(member, LibraryMember.class);
-            LibraryMemberDTO dbMember = modelMapper.map(memberService.update(transformedLibraryMemberObject), LibraryMemberDTO.class);
+            LibraryMemberDTO dbMember = memberService.update(member);
             response.setResponseData(dbMember);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        }catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
     }
@@ -192,17 +222,23 @@ public class LibraryMemberController {
     public ResponseEntity<Response> saveMember(@RequestBody LibraryMemberDTO member) {
         Response response = new Response();
         try {
-            LibraryMember transformedLibraryMemberObject=modelMapper.map(member, LibraryMember.class);
-            LibraryMemberDTO save = modelMapper.map(memberService.save(transformedLibraryMemberObject), LibraryMemberDTO.class);
+            LibraryMemberDTO save = memberService.save(member);
             response.setResponseData(save);
             response.setResponseException(null);
             return ResponseEntity.ok().body(response);
 
 
-        } catch (Exception ex) {
+        } catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.ok().body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+
         }
 
     }

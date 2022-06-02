@@ -12,8 +12,7 @@ import java.util.List;
 @Repository
 public class MembershipCardRepositoryImpl implements MembershipCardRepository {
     @Override
-    public List<MembershipCard> getByCardNumber(String cardNumber) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public List<MembershipCard> getByCardNumber(String cardNumber, EntityManager em) {
         String searchingParameter=cardNumber;
         List<MembershipCard> cards = em.createQuery("select m from MembershipCard m where m.cardNumber LIKE :value").setParameter("value", searchingParameter)
                 .getResultList();
@@ -22,29 +21,25 @@ public class MembershipCardRepositoryImpl implements MembershipCardRepository {
     }
 
     @Override
-    public MembershipCard save(MembershipCard membershipCard) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+    public MembershipCard save(MembershipCard membershipCard, EntityManager em) {
         em.persist(membershipCard);
         return membershipCard;
     }
 
     @Override
-    public void delete(MembershipCard dbMembershipCard) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+    public void delete(MembershipCard dbMembershipCard, EntityManager em) {
         MembershipCard dbCard = em.find(MembershipCard.class, dbMembershipCard.getId());
         em.remove(dbCard);
     }
 
     @Override
-    public MembershipCard getById(Long id) {
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
+    public MembershipCard getById(Long id, EntityManager em) {
         MembershipCard membershipCard = em.find(MembershipCard.class, id);
         return membershipCard;
     }
 
     @Override
-    public MembershipCard update(MembershipCard membershipCard) {
-        EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
+    public MembershipCard update(MembershipCard membershipCard, EntityManager em) {
         MembershipCard dbCard=em.find(MembershipCard.class, membershipCard.getId());
         if(dbCard.getCardNumber()!=membershipCard.getCardNumber()){
             membershipCard.setIssueDate(LocalDate.now());

@@ -17,6 +17,7 @@ import javax.persistence.EntityManagerFactory;
 import java.util.ArrayList;
 
 public class CustomAuthenticationManager implements AuthenticationManager {
+    @Autowired
     private UserRepository repo;
 
     public CustomAuthenticationManager(){
@@ -29,19 +30,19 @@ public class CustomAuthenticationManager implements AuthenticationManager {
         String password = authentication.getCredentials().toString();
         EntityManager em= EntityManagerProvider.getInstance().getEntityManager();
         try {
-
             em.getTransaction().begin();
             Librarian lib=repo.login(name, password);
             em.getTransaction().commit();
+            if(lib==null){
+                throw new UserNotFoundException("Neispravno korisničko ime ili lozinka.");
+            }
             return new UsernamePasswordAuthenticationToken(
                     name, password, new ArrayList<>());
-        } catch (UserNotFoundException e) {
-            em.getTransaction().rollback();
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
         finally{
             em.close();
-            EntityManagerProvider.getInstance().closeSession();
         }
     }
 }

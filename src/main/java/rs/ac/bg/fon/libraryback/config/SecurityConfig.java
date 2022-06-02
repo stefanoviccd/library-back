@@ -11,13 +11,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import rs.ac.bg.fon.libraryback.filter.JWTFilter;
-import rs.ac.bg.fon.libraryback.service.CustomUserDetailsService;
+import rs.ac.bg.fon.libraryback.service.impl.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private JWTFilter filter;
     @Override

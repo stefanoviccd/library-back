@@ -11,22 +11,22 @@ import java.util.List;
 @Repository
 public class UserRepositoryImpl implements UserRepository {
     @Override
-    public Librarian login(String username, String password) throws UserNotFoundException {
+    public Librarian login(String username, String password){
         EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
 
         List<Librarian> dbResult= em.createQuery("select m from Librarian m where m.username LIKE :valueUser and m.password LIKE :valuePass").setParameter("valueUser", username).setParameter("valuePass", password)
                 .getResultList();
         if(dbResult.isEmpty())
-            throw  new UserNotFoundException("Neispravno korisničko ime ili lozinka.");
+           return null;
         return dbResult.get(0);
     }
-    public Librarian findByUsername(String username) throws UserNotFoundException {
+    public Librarian findByUsername(String username)  {
         EntityManager em=EntityManagerProvider.getInstance().getEntityManager();
 
         List<Librarian> dbResult= em.createQuery("select m from Librarian m where m.username LIKE :valueUser").setParameter("valueUser", username)
                 .getResultList();
         if(dbResult.isEmpty())
-            throw  new UserNotFoundException("Neispravno korisničko ime.");
+            return null;
         return dbResult.get(0);
     }
 }

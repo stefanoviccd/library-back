@@ -7,10 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.bg.fon.libraryback.communication.Response;
 import rs.ac.bg.fon.libraryback.dto.BookRentDTO;
+import rs.ac.bg.fon.libraryback.exception.ValidationException;
 import rs.ac.bg.fon.libraryback.model.Book;
 import rs.ac.bg.fon.libraryback.model.BookRent;
 import rs.ac.bg.fon.libraryback.model.LibraryMember;
 import rs.ac.bg.fon.libraryback.service.BookRentService;
+import rs.ac.bg.fon.libraryback.service.impl.BookRentServiceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,8 +23,6 @@ import java.util.stream.Collectors;
 public class RentsController {
     @Autowired
     private BookRentService rentService;
-    @Autowired
-    private ModelMapper modelMapper;
 
     public RentsController() {
     }
@@ -32,20 +32,24 @@ public class RentsController {
     public ResponseEntity<Response> rentBook(@RequestBody BookRentDTO rentDTO) {
         Response response = new Response();
         try {
-            BookRent rent = modelMapper.map(rentDTO, BookRent.class);
-            Book book = rent.getBook();
-            LibraryMember member = rent.getByMember();
+            Book book = rentDTO.getBook();
+            LibraryMember member = rentDTO.getByMember();
             rentService.rentBook(member, book);
             response.setResponseData(null);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
 
@@ -56,17 +60,23 @@ public class RentsController {
     public ResponseEntity<Response> restoreBook(@RequestBody BookRentDTO rentDTO) {
         Response response = new Response();
         try {
-            BookRent rent = modelMapper.map(rentDTO, BookRent.class);
-            rentService.restoreBook(rent);
+
+            rentService.restoreBook(rentDTO);
             response.setResponseData(null);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        } catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
 
@@ -77,16 +87,22 @@ public class RentsController {
     public ResponseEntity<Response> getUserRents(@PathVariable(name = "id") Long userId) {
         Response response = new Response();
         try {
-            List<BookRentDTO> userRents = rentService.getUserRents(userId).stream().map(ur -> modelMapper.map(ur, BookRentDTO.class)).collect(Collectors.toList());
+            List<BookRentDTO> userRents = rentService.getUserRents(userId);
             response.setResponseData(userRents);
             response.setResponseException(null);
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
 
-        } catch (Exception ex) {
+        } catch (ValidationException ex) {
             response.setResponseData(null);
             response.setResponseException(ex);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+
+        }
+        catch (Exception ex) {
+            response.setResponseData(null);
+            response.setResponseException(ex);
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
 
         }
 

@@ -11,15 +11,9 @@ import javax.persistence.EntityManager;
 import java.util.List;
 public class DeleteBookValidator implements BookValidator {
     @Override
-    public void validate(Object o) throws ValidationException {
+    public void validate(Object o, EntityManager em) throws ValidationException {
         Long id=(Long) o;
-        EntityManager em = EntityManagerProvider.getInstance().getEntityManager();
-       /* List<BookRent> rentedBooks=em.createQuery("select m from BookRent m where m.book.id= :id ")
-                .setParameter("id", id).getResultList();
-        for(BookRent br: rentedBooks){
-            if(br.getReturnDate()!=null)
-                throw  new ValidationException("Book is currently rented!");
-        }*/
+        if (id == null) throw new ValidationException("Knjiga za brisanje ne sme imati id null!");
         Book dbBook=em.find(Book.class, id);
         if(dbBook.isCurrentlyRented())
             throw  new ValidationException("Knjiga je trenutno iznajmljena!");
