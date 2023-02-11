@@ -45,9 +45,9 @@ public class BookRent {
 
     )
     @JoinColumn(
-            name = "library_member",
+            name = "user",
             referencedColumnName = "id"
     )
-    private LibraryMember byMember;
+    private User user;
 
 }

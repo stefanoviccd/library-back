@@ -10,7 +10,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 /**
  *
@@ -28,17 +27,21 @@ public class Book {
     @Column(name = "isbn")
     private String ISBN;
     private String title;
-
     @Column(name = "issue_year")
     private int issueYear;
     @ManyToOne(
-
     )
     @JoinColumn(
             name = "author_id",
             referencedColumnName = "id"
     )
     private Author author;
+    @ManyToOne(
+    )
+    @JoinColumn(
+            name = "genre_id",
+            referencedColumnName = "id"
+    )
     private BookGenre genre;
     @Column(name = "is_currently_rented")
     private boolean isCurrentlyRented;

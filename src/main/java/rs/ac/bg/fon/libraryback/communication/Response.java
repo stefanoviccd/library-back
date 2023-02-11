@@ -1,22 +1,15 @@
 package rs.ac.bg.fon.libraryback.communication;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Response {
     private Object responseData;
-    private Exception responseException;
+    private String responseException;
 
-    public void setResponseData(Object responseData) {
-        this.responseData = responseData;
-    }
 
-    public Object getResponseData() {
-        return responseData;
-    }
-
-    public Exception getResponseException() {
-        return responseException;
-    }
-
-    public void setResponseException(Exception responseException) {
-        this.responseException = responseException;
-    }
 }
